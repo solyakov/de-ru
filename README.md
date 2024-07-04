@@ -18,3 +18,7 @@ This is a JS snippet for tampermoney that will allow you to type russian letters
 If you only have a German keyboard and need to type Russian letters, this script will help you do it without any problems. Works with Telegram, Youtube, Yandex, etc.
 
 ![yandex](docs/yandex.png)
+
+# It doesn't work in MY_BROWSER
+
+Yes, unfortunately this script doesn't work in some browsers, and it becomes even more annoying when it works in one version of the same browser but doesn't work in another. If it doesn't work, try a different browser and maybe it will work there.
