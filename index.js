@@ -10,7 +10,7 @@
 
 (function () {
 
-    const DE = 1, RU = 2;
+    const DE = 'German', RU = 'Russian';
     const translations = {
         "a": "а",
         "b": "б",
@@ -38,30 +38,37 @@
         "x": "х",
         "y": "ы",
         "z": "з",
-        "^": "ё",
+        "^": "ё", // No capital letter for "ё"
         "ü": "ю",
-        "+": "щ",
-        "#": "э",
+        "+": "щ", // No capital letter for "щ"
+        "#": "э", // No capital letter for "э"
         "ä": "ж",
         "ö": "ь",
-        "´": "ъ"
+        "´": "ъ"  // No capital letter for "ъ"
     };
+
+    for (const key of Object.keys(translations)) {
+        const isLetter = /[a-zA-Z]/.test(key);
+        if (!isLetter) {
+            continue;
+        }
+        translations[key.toUpperCase()] = translations[key].toUpperCase();
+    }
 
     let activeLang = DE;
 
     document.addEventListener('keydown', (ev) => {
         if (ev.ctrlKey && ev.shiftKey) {
             activeLang = (activeLang === DE) ? RU : DE;
-            console.log(`Switched to ${activeLang === DE ? 'German' : 'Russian'}`);
+            console.log(`Switched to ${activeLang}`);
             return;
         }
 
         if (activeLang !== RU) {
-            return;
+            return; // only translate to RU
         }
 
-        const key = ev.key.toLowerCase();
-        const translation = translations[key];
+        const translation = translations[ev.key];
         if (!translation) {
             return;
         }
