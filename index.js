@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         de-ru
 // @namespace    http://tampermonkey.net/
-// @version      2024-07-04
+// @version      2024-07-21
 // @author       You
 // @grant        none
 // @match        *://*/*
