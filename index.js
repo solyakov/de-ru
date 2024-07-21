@@ -48,7 +48,7 @@
     };
 
     for (const key of Object.keys(translations)) {
-        const isLetter = /[a-zA-Z]/.test(key);
+        const isLetter = /[a-z]/.test(key);
         if (!isLetter) {
             continue;
         }
