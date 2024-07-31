@@ -38,64 +38,74 @@
         "x": "х",
         "y": "ы",
         "z": "з",
-        "^": "ё", // No capital letter for "ё"
         "ü": "ю",
-        "+": "щ", // No capital letter for "щ"
-        "#": "э", // No capital letter for "э"
         "ä": "ж",
         "ö": "ь",
-        "´": "ъ"  // No capital letter for "ъ"
-    };
 
-    for (const key of Object.keys(translations)) {
-        const isLetter = /[a-zäöü]/.test(key);
-        if (!isLetter) {
-            continue;
-        }
-        translations[key.toUpperCase()] = translations[key].toUpperCase();
-    }
+        "^": "ё",
+        "°": "Ё",
+
+        "+": "щ",
+        "*": "Щ",
+
+        "#": "э",
+        "'": "Э",
+
+        "ß": "ъ",
+        "?": "Ъ",
+
+    };
 
     let activeLang = DE;
 
     document.addEventListener('keydown', (ev) => {
-        if (ev.ctrlKey && ev.shiftKey) {
-            activeLang = (activeLang === DE) ? RU : DE;
-            console.log(`Switched to ${activeLang}`);
-            return;
+        try {
+            if (ev.ctrlKey && ev.shiftKey) { // Ctrl+Shift to switch language
+                activeLang = (activeLang === DE) ? RU : DE;
+                console.log(`Switched to ${activeLang}`);
+                return;
+            }
+
+            if (activeLang !== RU) {
+                return; // only translate to RU
+            }
+
+            let translation = translations[ev.key.toLowerCase()];
+            if (!translation) {
+                return;
+            }
+
+            const capsLockOn = ev.getModifierState("CapsLock");
+            if (ev.shiftKey || capsLockOn) { // Shift or CapsLock to upper case
+                translation = translation.toUpperCase();
+            }
+
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            const target = ev.target
+
+            if (target.isContentEditable) {
+                const sel = window.getSelection();
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(document.createTextNode(translation));
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                return;
+            }
+
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+            const oldValue = target.value;
+            const newValue = oldValue.slice(0, start) + translation + oldValue.slice(end);
+
+            target.value = newValue;
+            target.selectionStart = target.selectionEnd = start + 1;
+        } catch (e) {
+            console.error(e);
         }
-
-        if (activeLang !== RU) {
-            return; // only translate to RU
-        }
-
-        const translation = translations[ev.key];
-        if (!translation) {
-            return;
-        }
-
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        const target = ev.target
-
-        if (target.isContentEditable) {
-            const sel = window.getSelection();
-            const range = sel.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(document.createTextNode(translation));
-            range.collapse(false);
-            sel.removeAllRanges();
-            sel.addRange(range);
-            return;
-        }
-
-        const start = target.selectionStart;
-        const end = target.selectionEnd;
-        const oldValue = target.value;
-        const newValue = oldValue.slice(0, start) + translation + oldValue.slice(end);
-
-        target.value = newValue;
-        target.selectionStart = target.selectionEnd = start + 1;
     });
 
 })();
